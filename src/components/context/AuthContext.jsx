@@ -27,12 +27,12 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
         try {
             await AsyncStorage.setItem('user', JSON.stringify({
-                userId: userData.userId,
-                name: userData.name,
-                nivel: userData.nivel
+                userId: userData.userId, //buscar usuario 
+                name: userData.name, // nombre
+                nivel: userData.nivel // "user" monstrar usuario comun  "admin" mostrar todo 
             }));
         } catch (error) {
-            console.log('Error al guardar el usuario en AsyncStorage:', error);
+            console.log('Error al guardar el usuario en AsyncStorage:', error);  
         }
     };
 

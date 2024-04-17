@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker'; 
 import axios from 'axios'; // Importa axios para realizar solicitudes HTTP
+import { useAuth } from "../components/context/AuthContext"; //IMPORTANTE 
 
 const ProfileEditor = () => {
   const [show, setShow] = React.useState(false);
@@ -14,6 +15,7 @@ const ProfileEditor = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [selectedImage, setSelectedImage] = useState(null); // Estado para almacenar la imagen seleccionada
+  const { user } = useAuth(); // Usando el contexto para obtener la información del usuario
 
   useEffect(() => {
     (async () => {
@@ -55,7 +57,7 @@ const ProfileEditor = () => {
         confirmPassword,
         image: selectedImage, // Agrega la imagen seleccionada a los datos del usuario
       };
-      const response = await axios.put(`https://taplibkback.onrender.com/api/user/${userId}`, userData);
+      const response = await axios.put(`https://taplibkback.onrender.com/api/user/${user.userId}`, userData);
       console.log('Cambios confirmados:', response.data);
     } catch (error) {
       console.error('Error al confirmar los cambios:', error);

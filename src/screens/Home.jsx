@@ -12,7 +12,7 @@ import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import { useAuth } from "../components/context/AuthContext";
+import { useAuth } from "../components/context/AuthContext"; //IMPORTANTE 
 
 const Home = () => {
   const navigation = useNavigation();
