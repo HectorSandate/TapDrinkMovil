@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NativeBaseProvider } from 'native-base';
+import { AuthProvider } from './src/components/context/AuthContext.jsx';
 
 // Importa tus pantallas aquí
 import RegisterScreen from './src/screens/register';
@@ -37,7 +38,9 @@ export default function App() {
     <NativeBaseProvider>
       <SafeAreaProvider>
         <StatusBar barStyle={'dark-content'} />
-        <Navigation />
+        <AuthProvider>
+          <Navigation />
+        </AuthProvider>
       </SafeAreaProvider>
     </NativeBaseProvider>
   );

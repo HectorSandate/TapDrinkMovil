@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, Box, Heading, AspectRatio, Image, Text, Center, Button } from "native-base";
 import { LinearGradient } from 'expo-linear-gradient';
-import { position } from "native-base/lib/typescript/theme/styled-system";
+
 
 const ResultadosScreen = ({ route, navigation }) => {
   console.log("Datos recibidos en la pantalla de resultados:", route.params);

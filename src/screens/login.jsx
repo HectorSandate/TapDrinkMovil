@@ -1,52 +1,80 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { useAuth } from "../components/context/AuthContext";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useAuth();
 
   const handleCreateAccount = () => {
-    navigation.navigate('RegisterScreen');
+    navigation.navigate("RegisterScreen");
   };
 
   const handleLogin = async () => {
     try {
       if (!email || !password) {
-        Alert.alert('Campos Vacíos', 'Por favor, completa todos los campos');
+        Alert.alert("Campos Vacíos", "Por favor, completa todos los campos");
         return;
       }
 
-      const response = await axios.post('https://taplibkback.onrender.com/api/login', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://taplibkback.onrender.com/api/login",
+        {
+          email,
+          password,
+        }
+      );
+      if (response.data) {
+        const { token, userId, name, nivel } = response.data;
+        console.log("Received token:", token);
+        console.log("Received user ID:", userId);
+        console.log("Received user ID:", name);
+        console.log("Received user ID:", nivel);
 
-      console.log('Respuesta del servidor:', response.data);
+        login({ token, userId, email, name, nivel });
+      }
 
-      if (response.status === 200 && response.data.message === "Login successful") {
-        navigation.navigate('BottomTabs');
+      console.log("Respuesta del servidor:", response.data);
+
+      if (
+        response.status === 200 &&
+        response.data.message === "Login successful"
+      ) {
+        navigation.navigate("BottomTabs");
       } else {
-        Alert.alert('Inicio de Sesión Fallido', response.data.message);
+        Alert.alert("Inicio de Sesión Fallido", response.data.message);
       }
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      Alert.alert('Error', 'Hubo un error al intentar iniciar sesión. Por favor, inténtalo de nuevo.');
+      console.error("Error al iniciar sesión:", error);
+      Alert.alert(
+        "Error",
+        "Hubo un error al intentar iniciar sesión. Por favor, inténtalo de nuevo."
+      );
     }
   };
 
   return (
     <LinearGradient
-      colors={['#141517', '#FFC107']}
+      colors={["#141517", "#FFC107"]}
       locations={[0.5, 0.8]}
       style={styles.container}
     >
       <View style={styles.header}>
-        <Image source={require('../../assets/Logo.png')} style={styles.logo} />
+        <Image source={require("../../assets/Logo.png")} style={styles.logo} />
         <Text style={styles.title}>Welcome Back</Text>
       </View>
       <View style={styles.form}>
@@ -101,11 +129,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     paddingTop: 25,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   logo: {
@@ -115,108 +143,108 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 25,
-    color: 'white',
+    color: "white",
   },
   form: {
     marginBottom: 23,
   },
   inputContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 18,
   },
   input: {
     height: 50,
     width: 289,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     fontSize: 18,
   },
   forgotPassword: {
-    textAlign: 'right',
-    color: 'white',
+    textAlign: "right",
+    color: "white",
     fontSize: 15,
   },
   loginButton: {
-    backgroundColor: '#FFC107',
+    backgroundColor: "#FFC107",
     paddingVertical: 10,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     height: 54,
     width: 170,
     marginBottom: 30,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   loginButtonText: {
-    color: 'black',
-    fontWeight: 'bold',
+    color: "black",
+    fontWeight: "bold",
     fontSize: 20,
   },
   separator: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 30,
     marginTop: 30,
   },
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginRight: 10,
     marginLeft: 10,
   },
   separatorText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
   },
   socialButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   googleButton: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 10,
     borderRadius: 5,
     marginRight: 10,
     width: 70,
     height: 50,
-    alignItems: 'center',
+    alignItems: "center",
   },
   facebookButton: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 8,
     borderRadius: 5,
     marginLeft: 10,
     width: 70,
     height: 50,
-    alignItems: 'center',
+    alignItems: "center",
   },
   createAccount: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "center",
     marginTop: 30,
   },
   createAccountText: {
     marginRight: 5,
-    color: 'black',
+    color: "black",
     fontSize: 18,
   },
   createAccountButton: {
-    color: '#FFC107',
-    fontWeight: 'bold',
+    color: "#FFC107",
+    fontWeight: "bold",
     fontSize: 20,
-    backgroundColor: 'black',
+    backgroundColor: "black",
     width: 120,
     height: 30,
-    textAlign: 'center',
-    textAlignVertical: 'center',
+    textAlign: "center",
+    textAlignVertical: "center",
     borderRadius: 8,
   },
 });
