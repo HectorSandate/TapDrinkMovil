@@ -145,7 +145,7 @@ export const LiquidGaugeProgress = ({ size, value }: Props) => {
         y={fontSize}
         text={text}
         font={font}
-        color="#045681"
+        color="#ffffff"
         transform={textTransform}
       />
 
@@ -160,7 +160,7 @@ export const LiquidGaugeProgress = ({ size, value }: Props) => {
           y={fontSize}
           text={text}
           font={font}
-          color="#A4DBf8"
+          color="#fffff"
           transform={textTransform}
         />
       </Group>

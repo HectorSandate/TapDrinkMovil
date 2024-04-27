@@ -1,12 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, Image } from 'react-native';
 import { LiquidGaugeProgress } from '../components/LiquidGaugeProgress';
 import { LinearGradient } from "expo-linear-gradient";
+import Paho from 'paho-mqtt';
 
 const MyComponent = () => {
   const selectedDrink = "Bebida 1"; // Aquí debes colocar el nombre de la bebida seleccionada
   const componentAlreadyExists = "Componente Ya Existente"; // Aquí debes colocar el nombre del componente ya existente
+
+  const [progress, setProgress] = useState(0);
+
+  const client = new Paho.Client(
+    "test.mosquitto.org",
+    8080,
+    "progreso/bebida"
+  );
+
+  useEffect(() => {
+    client.connect({
+      onSuccess: () => {
+        console.log("Conectado a MQTT");
+        client.subscribe("/progreso/bebida");
+      },
+      onFailure: () => {
+        console.log("Fallo la conexión a MQTT");
+      },
+    });
+
+    client.onMessageArrived = (message) => {
+      const newProgress = parseInt(message.payloadString);
+      setProgress((prevProgress) => prevProgress + newProgress);
+    };
+
+    return () => {
+      if (client.isConnected()) {
+        client.disconnect();
+      }
+    };
+  }, []);
 
   return (
     <LinearGradient
@@ -25,7 +57,7 @@ const MyComponent = () => {
         <Text style={styles.selectedDrink}>{selectedDrink}</Text>
       </View>
       <View style={styles.progressContainer}>
-        <LiquidGaugeProgress size={200} value={45} />
+        <LiquidGaugeProgress size={200} value={progress} />
       </View>
       <StatusBar style="auto" />
     </LinearGradient>
@@ -49,7 +81,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-   
   },
   progressContainer: {
     flex: 2,
