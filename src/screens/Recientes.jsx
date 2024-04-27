@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Heading, AspectRatio, Image, Text, Center, HStack, Stack, NativeBaseProvider, Spinner } from "native-base";
+import {
+  Box,
+  Heading,
+  AspectRatio,
+  Image,
+  Text,
+  Center,
+  Stack,
+  NativeBaseProvider,
+  Spinner,
+  ScrollView,
+  Button,
+} from "native-base";
 import { LinearGradient } from 'expo-linear-gradient';
-import { ScrollView } from 'react-native';
 
 const Todos = () => {
   const [recetas, setRecetas] = useState([]);
@@ -31,54 +42,82 @@ const Todos = () => {
     );
   }
 
+  // Agrupar recetas por categoría
+  const recetasPorCategoria = recetas.reduce((acc, receta) => {
+    acc[receta.categoria] = [...(acc[receta.categoria] || []), receta];
+    return acc;
+  }, {});
+
   return (
     <LinearGradient colors={['#141517', '#FFC107']} locations={[0.5, 8]} style={{ flex: 1 }}>
-      <ScrollView>
-        <Box alignItems="center" p={4}>
-          <Heading size="lg" color="warmGray.50" mt={4} mb={2}>
-            Todas las recetas
-          </Heading>
-          {recetas.map((receta) => (
-            <Box key={receta._id} maxW="80" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
-              borderColor: "coolGray.600",
-              backgroundColor: "gray.700"
-            }} _web={{
-              shadow: 2,
-              borderWidth: 0
-            }} _light={{
-              backgroundColor: "gray.50"
-            }} mb={4}>
-              <Box>
-                <AspectRatio w="100%" ratio={16 / 9}>
-                  <Image source={{ uri: receta.image.secure_url }} alt={receta.nombre} />
-                </AspectRatio>
-                <Center bg="violet.500" _dark={{
-                  bg: "violet.400"
-                }} _text={{
-                  color: "warmGray.50",
-                  fontWeight: "700",
-                  fontSize: "xs"
-                }} position="absolute" bottom="0" px="3" py="1.5">
-                  {receta.categoria}
-                </Center>
-              </Box>
-              <Stack p="4" space={3}>
-                <Stack space={2}>
-                  <Heading size="md" ml="-1">
-                    {receta.nombre}
-                  </Heading>
-                  <Text fontSize="xs" _light={{
-                    color: "violet.500"
-                  }} _dark={{
-                    color: "violet.400"
-                  }} fontWeight="500" ml="-0.5" mt="-1">
-                    Duración: {receta.duracion}
-                  </Text>
-                </Stack>
-              </Stack>
+      <ScrollView stickyHeaderIndices={[0]}>
+        {Object.entries(recetasPorCategoria).map(([categoria, recetasDeCategoria]) => (
+          <Box key={categoria}>
+            <Box bg="black" py={4}>
+              <Heading marginTop={15} size="md" ml="4" color="white">
+                {categoria}
+              </Heading>
             </Box>
-          ))}
-        </Box>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20 }}>
+              {recetasDeCategoria.map((receta) => (
+                <Box key={receta._id} rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
+                  borderColor: "coolGray.600",
+                  backgroundColor: "gray.700"
+                }} _web={{
+                  shadow: 2,
+                  borderWidth: 0
+                }} _light={{
+                  backgroundColor: "gray.50"
+                }} mx={2}>
+                  <Box>
+                    <AspectRatio ratio={16 / 9} h={200}>
+                      <Image
+                        source={{ uri: receta.image && receta.image.secure_url ? receta.image.secure_url : 'URL_DE_IMAGEN_POR_DEFECTO' }}
+                        alt={receta.nombre}
+                        resizeMode="cover"
+                      />
+                    </AspectRatio>
+                    <Center bg="violet.500" _dark={{
+                      bg: "violet.400"
+                    }} _text={{
+                      color: "warmGray.50",
+                      fontWeight: "700",
+                      fontSize: "xs"
+                    }} position="absolute" bottom="0" px="3" py="1.5" w="100%">
+                      {receta.categoria}
+                    </Center>
+                  </Box>
+                  <Stack p="4" space={3}>
+                    <Stack space={2}>
+                      <Heading size="md" ml="-1">
+                        {receta.nombre}
+                      </Heading>
+                      <Text fontSize="xs" _light={{
+                        color: "violet.500"
+                      }} _dark={{
+                        color: "violet.400"
+                      }} fontWeight="500" ml="-0.5" mt="-1">
+                        Duración: {receta.duracion}
+                      </Text>
+                      {/* Botón "Pedir" dentro de cada tarjeta */}
+                      <Button
+                        bg="black"
+                        _text={{ color: "white", fontSize: 18 }}
+                        size="xs"
+                        onPress={() => console.log("Pedido realizado para", receta.nombre)}
+                        position="absolute"
+                        bottom={2}
+                        right={2}
+                      >
+                        Pedir
+                      </Button>
+                    </Stack>
+                  </Stack>
+                </Box>
+              ))}
+            </ScrollView>
+          </Box>
+        ))}
       </ScrollView>
     </LinearGradient>
   );

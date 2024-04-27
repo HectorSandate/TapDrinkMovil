@@ -33,9 +33,9 @@ export const CustomBottomTab: FC<BottomTabBarProps> = ({
       case 'Home':
         return 'home';
       case 'Favoritos':
-        return 'star';
-      case 'Recientes':
         return 'clock';
+      case 'Recientes':
+        return 'layers';
       case 'Perfil':
         return 'user';
       default:

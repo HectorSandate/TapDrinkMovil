@@ -1,3 +1,4 @@
+// Modificar Perfil
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Pressable, Text, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import { Icon, Input, NativeBaseProvider, Stack, Button } from 'native-base';
@@ -49,7 +50,7 @@ const ProfileEditor = () => {
 
   const handleConfirmChanges = async () => {
     try {
-      const userId = ''; // Aquí debes obtener el ID del usuario actualmente autenticado
+      const userId = user.userId; // Obtener el ID del usuario actual
       const userData = {
         name,
         email,
@@ -57,12 +58,14 @@ const ProfileEditor = () => {
         confirmPassword,
         image: selectedImage, // Agrega la imagen seleccionada a los datos del usuario
       };
-      const response = await axios.put(`https://taplibkback.onrender.com/api/user/${user.userId}`, userData);
+      const response = await axios.put(`https://taplibkback.onrender.com/api/user/${userId}`, userData);
       console.log('Cambios confirmados:', response.data);
     } catch (error) {
       console.error('Error al confirmar los cambios:', error);
     }
   };
+  
+  
 
   return (
     <LinearGradient
@@ -70,17 +73,17 @@ const ProfileEditor = () => {
       locations={[0.5, 0.8]}
       style={styles.container}
     >
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Modificar Perfil</Text>
+      </View>
       <Stack space={4} w="100%" alignItems="center">
         <View style={styles.imageContainer}>
           <TouchableOpacity style={styles.profileImageContainer} onPress={handleImageClick}>
             {selectedImage ? (
               <Image source={{ uri: selectedImage }} style={styles.profileImage} />
             ) : (
-              <Image source={require('../../assets/perfil.jpg')} style={styles.profileImage} />
+              <Image source={require('../../assets/defaultuser.jpg')} style={styles.profileImage} />
             )}
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.selectImageButton} onPress={handleSelectImage}>
-            <Text style={styles.selectImageText}>Seleccionar Imagen</Text>
           </TouchableOpacity>
         </View>
         <Input
@@ -89,11 +92,11 @@ const ProfileEditor = () => {
           onChangeText={(text) => setName(text)}
           InputLeftElement={
             <Icon
-              as={<MaterialIcons name="person" />} size={5} ml="2" color="#FFC107" // Modificado el color
+              as={<MaterialIcons name="person" />} size={5} ml="2" color="black"  
             />
           }
           placeholder="Nombre"
-          style={{ backgroundColor: '#D9D9D9', color: '#000' }} // Ajuste de color de fondo y texto
+          _light={{ backgroundColor: '#D9D9D9' }} 
         />
         <Input
           w={{base: "75%", md: "25%" }}
@@ -101,11 +104,11 @@ const ProfileEditor = () => {
           onChangeText={(text) => setEmail(text)}
           InputLeftElement={
             <Icon
-              as={<MaterialIcons name="email" />} size={5} ml="2" color="#FFC107" // Modificado el color
+              as={<MaterialIcons name="email" />} size={5} ml="2" color="black" 
             />
           }
           placeholder="Correo"
-          style={{ backgroundColor: '#D9D9D9', color: '#000' }} // Ajuste de color de fondo y texto
+          _light={{ backgroundColor: '#D9D9D9' }}
         />
         <Input
           w={{base: "75%", md: "25%"}}
@@ -115,12 +118,12 @@ const ProfileEditor = () => {
           InputRightElement={
             <Pressable onPress={() => setShow(!show)}>
               <Icon
-                as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />} size={5} mr="2" color="#FFC107" // Modificado el color
+                as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />} size={5} mr="2" color="black" 
               />
             </Pressable>
           }
           placeholder="Contraseña"
-          style={{ backgroundColor: '#D9D9D9', color: '#000' }} // Ajuste de color de fondo y texto
+          _light={{ backgroundColor: '#D9D9D9' }} 
         />
         <Input
           w={{base: "75%", md: "25%"}}
@@ -130,12 +133,12 @@ const ProfileEditor = () => {
           InputRightElement={
             <Pressable onPress={() => setShow(!show)}>
               <Icon
-                as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />} size={5} mr="2" color="#FFC107" // Modificado el color
+                as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />} size={5} mr="2" color="black" 
               />
             </Pressable>
           }
           placeholder="Confirmar Contraseña"
-          style={{ backgroundColor: '#D9D9D9', color: '#000' }} // Ajuste de color de fondo y texto
+          _light={{ backgroundColor: '#D9D9D9' }} 
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleConfirmChanges}>
@@ -155,7 +158,7 @@ const ProfileEditor = () => {
               <MaterialIcons name="close" size={24} color="white" />
             </TouchableOpacity>
             <Image
-              source={require('../../assets/perfil.jpg')}
+              source={require('../../assets/defaultuser.jpg')}
               style={styles.modalImage}
             />
           </View>
@@ -168,8 +171,20 @@ const ProfileEditor = () => {
 const styles={
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    padding: 25,
+  },
+  titleContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 25
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+    marginTop: 35
   },
   imageContainer: {
     alignItems: 'center',
@@ -184,19 +199,6 @@ const styles={
   profileImage: {
     width: '100%',
     height: '100%',
-  },
-  selectImageButton: {
-    marginTop: 5,
-    backgroundColor: '#FFC107',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  selectImageText: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: 'black',
   },
   buttonContainer: {
     alignItems: 'center',
@@ -246,5 +248,3 @@ const App = () => {
 };
 
 export default App;
-
-

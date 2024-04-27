@@ -2,7 +2,6 @@ import React from "react";
 import { ScrollView, Box, Heading, AspectRatio, Image, Text, Center, Button } from "native-base";
 import { LinearGradient } from 'expo-linear-gradient';
 
-
 const ResultadosScreen = ({ route, navigation }) => {
   console.log("Datos recibidos en la pantalla de resultados:", route.params);
 
@@ -28,37 +27,36 @@ const ResultadosScreen = ({ route, navigation }) => {
       <Box style={styles.header}>
         <Text style={styles.titulo}>{titulo}</Text>
       </Box>
-      <Box style={styles.scrollViewContainer}>
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          {recetas.map((receta, index) => (
-            <Box key={index} style={styles.recetaContainer}>
-              <Box style={styles.imageContainer}>
-                <AspectRatio ratio={16 / 9}>
-                  <Image source={{ uri: receta.image.secure_url || '' }} alt={receta.nombre || ''} />
-                </AspectRatio>
-                <Center style={styles.categoriaContainer}>
-                  <Text style={styles.categoriaText}>{receta.categoria || ''}</Text>
-                </Center>
-              </Box>
-              <Box style={styles.textContainer}>
-                <Heading size="md" style={styles.nombreText}>
-                  {receta.nombre || ''}
-                </Heading>
-                <Text style={styles.duracionText}>
-                  Duración: {receta.duracion || ''}
-                </Text>
-              </Box>
-              <Box>
-                <Button style={styles.pedir}>
-                  <Text style={styles.textPedir}>Pedir</Text>
-                </Button>
-              </Box>
+      <ScrollView horizontal={true} contentContainerStyle={styles.scrollViewContent}>
+        {recetas.map((receta, index) => (
+          <Box key={index} style={styles.recetaContainer}>
+            <Box style={styles.imageContainer}>
+              <AspectRatio ratio={1 / 1}>
+                <Image source={{ uri: receta.image && receta.image.secure_url ? receta.image.secure_url : '' }} alt={receta.nombre || ''} resizeMode="cover" style={styles.image} />
+              </AspectRatio>
+              <Center style={styles.categoriaContainer}>
+                <Text style={styles.categoriaText}>{receta.categoria || ''}</Text>
+              </Center>
             </Box>
-          ))}
-        </ScrollView>
-      </Box>
+            <Box style={styles.textContainer}>
+              <Heading size="md" style={styles.nombreText}>
+                {receta.nombre || ''}
+              </Heading>
+              <Text style={styles.duracionText}>
+                Duración: {receta.duracion || ''}
+              </Text>
+              <Text style={styles.procedimientoText}>
+                {receta.procedimiento || ''}
+              </Text>
+            </Box>
+            <Button style={styles.pedir}>
+              <Text style={styles.textPedir}>Pedir</Text>
+            </Button>
+          </Box>
+        ))}
+      </ScrollView>
       <Button onPress={() => navigation.goBack()} style={styles.button}>
-       <Text style={styles.textPedir}>Volver</Text> 
+        <Text style={styles.textPedir}>Volver</Text>
       </Button>
     </LinearGradient>
   );
@@ -70,7 +68,6 @@ const styles = {
   },
   header: {
     paddingTop: 40,
-    paddingBottom: 20,
     paddingLeft: 20,
     alignItems: 'flex-start',
   },
@@ -78,18 +75,15 @@ const styles = {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-    paddingTop: 25,
-  },
-  scrollViewContainer: {
-    flex: 1,
-    paddingTop: 20, 
+    paddingTop: 35,
   },
   scrollViewContent: {
-    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   recetaContainer: {
-    width: '80%',
-    marginBottom: 20,
+    width: 300,
+    marginRight: 20,
+    marginVertical: 90,
     borderRadius: 10,
     overflow: 'hidden',
     borderWidth: 1,
@@ -103,6 +97,9 @@ const styles = {
   },
   imageContainer: {
     position: 'relative',
+  },
+  image: {
+    height: 200,
   },
   categoriaContainer: {
     position: 'absolute',
@@ -124,25 +121,32 @@ const styles = {
   duracionText: {
     fontSize: 12,
     color: '#666',
+    marginBottom: 5,
+  },
+  procedimientoText: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 10,
+    maxHeight: 50, // Ajusta la altura máxima del texto del procedimiento
+    overflow: 'hidden', // Oculta el exceso de texto
   },
   pedir: {
     backgroundColor: 'black',
     borderRadius: 10,
-    width: 100, 
-    height: 40, 
-    justifyContent: 'center', 
-    alignSelf: 'flex-end', 
-    marginRight: 10,
-    marginBottom: 10,
+    width: '100%',
+    height: 40,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 10, // Agrega margen inferior al botón
   },
   textPedir: {
-    fontSize: 18, 
-    color: 'white', 
+    fontSize: 18,
+    color: 'white',
     fontWeight: 'bold',
   },
   button: {
     position: 'absolute',
-    top: 20,
+    top: 35,
     left: 20,
     backgroundColor: '#FFC107',
     padding: 10,

@@ -19,6 +19,8 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorAlert, setErrorAlert] = useState(null);
 
   const handleCreateAccount = () => {
     navigation.navigate("RegisterScreen");
@@ -27,9 +29,12 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     try {
       if (!email || !password) {
-        Alert.alert("Campos Vacíos", "Por favor, completa todos los campos");
+        setErrorAlert("Por favor, completa todos los campos");
+        setTimeout(() => setErrorAlert(null), 5000);
         return;
       }
+
+      setIsLoading(true);
 
       const response = await axios.post(
         "https://taplibkback.onrender.com/api/login",
@@ -38,6 +43,9 @@ const LoginScreen = () => {
           password,
         }
       );
+
+      setIsLoading(false);
+
       if (response.data) {
         const { token, userId, name, nivel } = response.data;
         console.log("Received token:", token);
@@ -56,14 +64,16 @@ const LoginScreen = () => {
       ) {
         navigation.navigate("BottomTabs");
       } else {
-        Alert.alert("Inicio de Sesión Fallido", response.data.message);
+        setErrorAlert(response.data.message);
+        setTimeout(() => setErrorAlert(null), 5000);
       }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
-      Alert.alert(
-        "Error",
+      setErrorAlert(
         "Hubo un error al intentar iniciar sesión. Por favor, inténtalo de nuevo."
       );
+      setTimeout(() => setErrorAlert(null), 5000);
+      setIsLoading(false);
     }
   };
 
@@ -74,7 +84,7 @@ const LoginScreen = () => {
       style={styles.container}
     >
       <View style={styles.header}>
-        <Image source={require("../../assets/Logo.png")} style={styles.logo} />
+        <Image source={require("../../assets/logoTap.png")} style={styles.logo} />
         <Text style={styles.title}>Welcome Back</Text>
       </View>
       <View style={styles.form}>
@@ -84,6 +94,7 @@ const LoginScreen = () => {
             style={styles.input}
             value={email}
             onChangeText={setEmail}
+            editable={!isLoading} // Deshabilitar si isLoading es true
           />
         </View>
         <View style={styles.inputContainer}>
@@ -93,14 +104,26 @@ const LoginScreen = () => {
             style={styles.input}
             value={password}
             onChangeText={setPassword}
+            editable={!isLoading} // Deshabilitar si isLoading es true
           />
         </View>
         <TouchableOpacity>
           <Text style={styles.forgotPassword}>Recuperar Contraseña</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+      {!!errorAlert && (
+        <View style={styles.alertContainer}>
+          <Text style={styles.alertText}>{errorAlert}</Text>
+        </View>
+      )}
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={handleLogin}
+        disabled={isLoading}
+      >
+        <Text style={styles.loginButtonText}>
+          {isLoading ? "Iniciando Sesión..." : "Iniciar Sesión"}
+        </Text>
       </TouchableOpacity>
       <View style={styles.separator}>
         <View style={styles.line} />
@@ -247,6 +270,17 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     borderRadius: 8,
   },
+  alertContainer: {
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  alertText: {
+    color: "white",
+    textAlign: "center",
+  },
 });
 
 export default LoginScreen;
+

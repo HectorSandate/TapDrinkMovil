@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios'; // Importar axios para realizar solicitudes HTTP
@@ -11,12 +11,26 @@ const RegisterScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorAlert, setErrorAlert] = useState(null);
 
     const handleRegister = async () => {
         try {
+            setIsLoading(true);
+
+            // Verificar que se complete toda la información
+            if (!name || !email || !password || !confirmPassword) {
+                setErrorAlert('Por favor, completa todos los campos');
+                setTimeout(() => setErrorAlert(null), 5000);
+                setIsLoading(false);
+                return;
+            }
+
             // Verificar que las contraseñas coincidan
             if (password !== confirmPassword) {
-                alert('Las contraseñas no coinciden');
+                setErrorAlert('Las contraseñas no coinciden');
+                setTimeout(() => setErrorAlert(null), 5000);
+                setIsLoading(false);
                 return;
             }
 
@@ -35,6 +49,7 @@ const RegisterScreen = () => {
         } catch (error) {
             console.error('Error al registrar:', error);
             // Manejar errores aquí
+            setIsLoading(false);
         }
     };
 
@@ -45,7 +60,7 @@ const RegisterScreen = () => {
             style={styles.container}
         >
             <View style={styles.header}>
-                <Image source={require('../../assets/Logo.png')} style={styles.logo} />
+                <Image source={require('../../assets/logoTap.png')} style={styles.logo} />
                 <Text style={styles.title}>¡Bienvenido!</Text>
             </View>
             <View style={styles.form}>
@@ -55,6 +70,7 @@ const RegisterScreen = () => {
                         style={styles.input}
                         value={name}
                         onChangeText={setName}
+                        editable={!isLoading} // Deshabilitar si isLoading es true
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -63,6 +79,7 @@ const RegisterScreen = () => {
                         style={styles.input}
                         value={email}
                         onChangeText={setEmail}
+                        editable={!isLoading} // Deshabilitar si isLoading es true
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -72,6 +89,7 @@ const RegisterScreen = () => {
                         style={styles.input}
                         value={password}
                         onChangeText={setPassword}
+                        editable={!isLoading} // Deshabilitar si isLoading es true
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -81,10 +99,20 @@ const RegisterScreen = () => {
                         style={styles.input}
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
+                        editable={!isLoading} // Deshabilitar si isLoading es true
                     />
                 </View>
             </View>
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+            {!!errorAlert && (
+                <View style={styles.alertContainer}>
+                    <Text style={styles.alertText}>{errorAlert}</Text>
+                </View>
+            )}
+            <TouchableOpacity
+                style={[styles.registerButton, { opacity: isLoading ? 0.5 : 1 }]}
+                onPress={handleRegister}
+                disabled={isLoading}
+            >
                 <Text style={styles.registerButtonText}>Crear Cuenta</Text>
             </TouchableOpacity>
             <View style={styles.separator}>
@@ -225,6 +253,16 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         textAlignVertical: 'center',
         borderRadius: 8,
+    },
+    alertContainer: {
+        backgroundColor: 'red',
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 10,
+    },
+    alertText: {
+        color: 'white',
+        textAlign: 'center',
     },
 });
 
