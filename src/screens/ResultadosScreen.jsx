@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { ScrollView, Box, Heading, AspectRatio, Image, Text, Center, Button } from "native-base";
 import { LinearGradient } from 'expo-linear-gradient';
 import Paho from "paho-mqtt";
-import { useNavigation } from '@react-navigation/native'; // Importa la función useNavigation
+import { useNavigation } from '@react-navigation/native';
 
 const ResultadosScreen = ({ route }) => {
   console.log("Datos recibidos en la pantalla de resultados:", route.params);
@@ -12,7 +12,7 @@ const ResultadosScreen = ({ route }) => {
 
   const [connected, setConnected] = useState(false);
   const client = useRef(null);
-  const navigation = useNavigation(); // Obtiene el objeto de navegación
+  const navigation = useNavigation();
 
   useEffect(() => {
     client.current = new Paho.Client(
@@ -39,13 +39,9 @@ const ResultadosScreen = ({ route }) => {
     };
   }, []);
 
-  const enviarDatos = (nombre, procedimiento) => {
+  const enviarDatos = (nombre) => {
     if (connected) {
-      const datos = { nombre, procedimiento };
-      const mensaje = JSON.stringify(datos); // Envía los datos como un JSON
-      console.log("Enviando datos: ", datos);
-      client.current.send("recetas/procedimiento", mensaje);
-      navigation.navigate('Favoritos', { nombreReceta: nombre }); // Envía el nombre a la pantalla de Favoritos
+      navigation.navigate('Favoritos', { nombreReceta: nombre });
     } else {
       console.log("No se puede enviar el mensaje. Cliente MQTT no conectado.");
     }
@@ -93,11 +89,8 @@ const ResultadosScreen = ({ route }) => {
               <Text style={styles.duracionText}>
                 Duración: {receta.duracion || ''}
               </Text>
-              <Text style={styles.procedimientoText}>
-                {receta.procedimiento || ''}
-              </Text>
             </Box>
-            <Button style={styles.pedir} onPress={() => enviarDatos(receta.nombre, receta.procedimiento)}>
+            <Button style={styles.pedir} onPress={() => enviarDatos(receta.nombre)}>
               <Text style={styles.textPedir}>Pedir</Text>
             </Button>
           </Box>
@@ -123,15 +116,16 @@ const styles = {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-    paddingTop: 35,
+    paddingTop: 55,
   },
   scrollViewContent: {
     paddingHorizontal: 20,
   },
   recetaContainer: {
-    width: 300,
+    width: 325, // Ajusta el ancho del contenedor de la receta
+    height: 450,
+    top:50,
     marginRight: 20,
-    marginVertical: 90,
     borderRadius: 10,
     overflow: 'hidden',
     borderWidth: 1,
@@ -147,7 +141,7 @@ const styles = {
     position: 'relative',
   },
   image: {
-    height: 200,
+    height: 150, // Ajusta la altura de la imagen
   },
   categoriaContainer: {
     position: 'absolute',
@@ -171,13 +165,6 @@ const styles = {
     color: '#666',
     marginBottom: 5,
   },
-  procedimientoText: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 10,
-    maxHeight: 50, // Ajusta la altura máxima del texto del procedimiento
-    overflow: 'hidden', // Oculta el exceso de texto
-  },
   pedir: {
     backgroundColor: 'black',
     borderRadius: 10,
@@ -185,7 +172,7 @@ const styles = {
     height: 40,
     justifyContent: 'center',
     alignSelf: 'center',
-    marginBottom: 10, // Agrega margen inferior al botón
+    marginBottom: 10,
   },
   textPedir: {
     fontSize: 18,
@@ -194,7 +181,7 @@ const styles = {
   },
   button: {
     position: 'absolute',
-    top: 35,
+    top: 45,
     left: 20,
     backgroundColor: '#FFC107',
     padding: 10,
@@ -208,4 +195,3 @@ const styles = {
 };
 
 export default ResultadosScreen;
-

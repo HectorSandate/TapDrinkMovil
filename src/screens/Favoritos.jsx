@@ -6,7 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Paho from 'paho-mqtt';
 
 const FavoritosScreen = ({ route }) => {
-  const selectedDrink = "Bebida 1"; // Aquí debes colocar el nombre de la bebida seleccionada
+  const selectedDrink = "Ninguna Bebida En curso"; // Aquí debes colocar el nombre de la bebida seleccionada
   const componentAlreadyExists = "Componente Ya Existente"; // Aquí debes colocar el nombre del componente ya existente
 
   const [progress, setProgress] = useState(0);
