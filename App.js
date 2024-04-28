@@ -11,6 +11,7 @@ import RegisterScreen from './src/screens/register';
 import LoginScreen from './src/screens/login';
 import BottomTabs from './src/BottomTabs';
 import ResultadosScreen from './src/screens/ResultadosScreen';
+console.warn = () => {};
 
 const Stack = createStackNavigator();
 
