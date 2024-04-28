@@ -1,12 +1,51 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ScrollView, Box, Heading, AspectRatio, Image, Text, Center, Button } from "native-base";
 import { LinearGradient } from 'expo-linear-gradient';
+import Paho from "paho-mqtt";
 
 const ResultadosScreen = ({ route, navigation }) => {
   console.log("Datos recibidos en la pantalla de resultados:", route.params);
 
   const { recetas, nombreCocktail, filtro } = route.params;
   const titulo = nombreCocktail ? `Resultados de búsqueda: ${nombreCocktail}` : `Resultados de búsqueda: ${filtro}`;
+
+  const [connected, setConnected] = useState(false);
+  const client = useRef(null);
+
+  useEffect(() => {
+    client.current = new Paho.Client(
+      "test.mosquitto.org",
+      8080,
+      "recetas/procedimiento"
+    );
+
+    client.current.connect({
+      onSuccess: () => {
+        console.log("Conectado");
+        setConnected(true);
+      },
+      onFailure: () => {
+        console.log("Fallo la conexión");
+        setConnected(false);
+      },
+    });
+
+    return () => {
+      if (client.current.isConnected()) {
+        client.current.disconnect();
+      }
+    };
+  }, []);
+
+  const enviarDatos = (procedimiento) => {
+    if (connected) {
+      const mensaje = `${procedimiento}`;
+      console.log("Enviando procedimiento: ", procedimiento);
+      client.current.send("recetas/procedimiento", mensaje);
+    } else {
+      console.log("No se puede enviar el mensaje. Cliente MQTT no conectado.");
+    }
+  };
 
   if (!recetas || recetas.length === 0) {
     console.log("No hay recetas disponibles.");
@@ -49,7 +88,7 @@ const ResultadosScreen = ({ route, navigation }) => {
                 {receta.procedimiento || ''}
               </Text>
             </Box>
-            <Button style={styles.pedir}>
+            <Button style={styles.pedir} onPress={() => enviarDatos(receta.procedimiento)}>
               <Text style={styles.textPedir}>Pedir</Text>
             </Button>
           </Box>
