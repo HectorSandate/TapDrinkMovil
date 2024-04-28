@@ -7428,11 +7428,6 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
-react-native-mqtt@^0.1.0-beta4:
-  version "0.1.0-beta4"
-  resolved "https://registry.npmjs.org/react-native-mqtt/-/react-native-mqtt-0.1.0-beta4.tgz"
-  integrity sha512-QRm0hTfxgEKfd0BIJ9heIEgqdeWnfZMdsWRKSKWvBl/9crikSwhXFc8FTrsTqeitPyHxIpuSHbBELbBXcm+ipg==
-
 react-native-paho-mqtt@^0.1.1:
   version "0.1.1"
   resolved "https://registry.npmjs.org/react-native-paho-mqtt/-/react-native-paho-mqtt-0.1.1.tgz"
