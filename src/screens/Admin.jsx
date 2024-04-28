@@ -1,23 +1,55 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import axios from "axios";
 
 const Admin = () => {
-  // Datos simulados de licores registrados
-  const liquorsData = [
-    { nombre: 'Vodka', cantidad: 10 },
-    { nombre: 'Ron', cantidad: 5 },
-    { nombre: 'Whisky', cantidad: 8 },
-    // Agrega más licores si es necesario
-  ];
+  const [recetasCount, setRecetasCount] = useState(0);
+  const [licoresCount, setLicoresCount] = useState(0);
+  const [usersCount, setUsersCount] = useState(0);
+  const [licor, setLicor] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      // Obtener el número de recetas activas
+      const recetasResponse = await axios.get(
+        "https://taplibkback.onrender.com/api/recetas/active"
+      );
+      setRecetasCount(recetasResponse.data.recetas.length);
+
+      // Obtener el número de licores activos
+      const licoresResponse = await axios.get(
+        "https://taplibkback.onrender.com/api/licores/active"
+      );
+      console.log("Respuesta de la API:", licoresResponse.data);
+      setLicoresCount(licoresResponse.data.licor.length);
+      setLicor(licoresResponse.data.licor);
+
+      // Obtener el número de usuarios activos
+      const usersResponse = await axios.get(
+        "https://taplibkback.onrender.com/api/users/active"
+      );
+      setUsersCount(usersResponse.data.users.length);
+    } catch (error) {
+      console.error("Error al obtener los datos:", error);
+    }
+  };
 
   return (
-    <LinearGradient colors={['#141517', '#FFC107']} locations={[0.5, 8]} style={{ flex: 1 }}>
+    <LinearGradient
+      colors={["#141517", "#FFC107"]}
+      locations={[0.5, 8]}
+      style={{ flex: 1 }}
+    >
       <View style={styles.container}>
         <View style={styles.gridContainer}>
           <View style={styles.gridItem}>
             <Text style={styles.gridText}>Recetas Registradas:</Text>
-            <Text style={styles.quantityText}>25</Text>
+            <Text style={styles.quantityText}>{recetasCount}</Text>
           </View>
           <View style={styles.gridItem}>
             <Text style={styles.gridText}>Bebidas solicitadas:</Text>
@@ -25,24 +57,26 @@ const Admin = () => {
           </View>
           <View style={styles.gridItem}>
             <Text style={styles.gridText}>Licores Registrados:</Text>
-            <Text style={styles.quantityText}>3</Text>
+            <Text style={styles.quantityText}>{licoresCount}</Text>
           </View>
           <View style={styles.gridItem}>
             <Text style={styles.gridText}>Usuarios Registrados:</Text>
-            <Text style={styles.quantityText}>50</Text>
+            <Text style={styles.quantityText}>{usersCount}</Text>
           </View>
         </View>
-        <View style={[styles.liquorsContainer, { height: liquorsData.length > 0 ? 'auto' : 0 }]}>
+        <View style={styles.liquorsContainer}>
           <Text style={styles.header}>Licores Registrados:</Text>
           <FlatList
-            data={liquorsData}
-            keyExtractor={(item, index) => index.toString()}
+            data={licor}
+            keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
               <View style={styles.liquorItem}>
-                <Text>{item.nombre}</Text>
-                <Text style={styles.quantityText}>{item.cantidad}</Text>
+                <Text>{item.nombreLicor}</Text>
+                <Text style={styles.quantityText}>{item.mililitros}</Text>
               </View>
             )}
+            scrollEnabled={true}
+            contentContainerStyle={styles.liquorsContent}
           />
         </View>
       </View>
@@ -54,54 +88,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'transparent', // Cambiado a transparente para que el gradiente se muestre correctamente
+    backgroundColor: "transparent",
   },
   gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     marginBottom: 20,
   },
   gridItem: {
-    width: '48%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "48%",
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: "#333",
     paddingVertical: 20,
     marginBottom: 10,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderRadius: 10,
   },
   gridText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   quantityText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FF6347', // Color rojo
+    fontWeight: "bold",
+    color: "#FF6347",
   },
   liquorsContainer: {
-    backgroundColor: '#FFF',
+    flex: 1,
+    backgroundColor: "#FFF",
     padding: 10,
     borderRadius: 10,
     marginBottom: 20,
-    overflow: 'hidden', // Para recortar contenido si es necesario
   },
   header: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   liquorItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 10,
+  },
+  liquorsContent: {
+    paddingBottom: 10,
   },
 });
 
 export default Admin;
-
