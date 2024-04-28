@@ -4885,6 +4885,13 @@ expo-modules-core@1.11.13:
   dependencies:
     invariant "^2.2.4"
 
+expo-sensors@^12.9.1:
+  version "12.9.1"
+  resolved "https://registry.npmjs.org/expo-sensors/-/expo-sensors-12.9.1.tgz"
+  integrity sha512-G2WYHO+RMU9Vj7wvzjV3lPMPDEBvS3S9/oYs1ToaaS4LR6VH8Dr2pJqspS7n8GFq+n5ftEi/2oqE4EizlHX/lQ==
+  dependencies:
+    invariant "^2.2.4"
+
 expo-status-bar@~1.11.1:
   version "1.11.1"
   resolved "https://registry.npmjs.org/expo-status-bar/-/expo-status-bar-1.11.1.tgz"

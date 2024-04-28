@@ -16,6 +16,7 @@ import {
   Text,
   useFont,
 } from "@shopify/react-native-skia";
+import { Accelerometer } from "expo-sensors";
 
 type Props = {
   size: number;
@@ -81,6 +82,10 @@ export const LiquidGaugeProgress = ({ size, value }: Props) => {
   const translateYPercent = useSharedValue(0); // animated value translate wave vertically
   const textValue = useSharedValue(0); // animated value for text
 
+  // Valores para el movimiento del líquido con el giroscopio
+  const liquidX = useSharedValue(0);
+  const liquidY = useSharedValue(0);
+
   useEffect(() => {
     textValue.value = withTiming(value, { // animate from 0 to value
       duration: 1000, // duration of animation
@@ -112,20 +117,31 @@ export const LiquidGaugeProgress = ({ size, value }: Props) => {
     );
   }, []);
 
+  useEffect(() => {
+    const subscription = Accelerometer.addListener(({ x, y }) => {
+      liquidX.value = x * 10;
+      liquidY.value = y * 10;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const clipPath = useDerivedValue(() => {
     // animated value for clip wave path
     const clipP = Skia.Path.MakeFromSVGString(clipSvgPath); // convert svg path string to skia format path
     const transformMatrix = Skia.Matrix(); // create Skia tranform matrix
     transformMatrix.translate(
-      fillCircleMargin - waveLength * translateXAnimated.value, // translate left from start of the first wave to the length of first wave
+      fillCircleMargin - waveLength * translateXAnimated.value + liquidX.value, // translate left from start of the first wave to the length of first wave
       fillCircleMargin +
         (1 - translateYPercent.value) * fillCircleRadius * 2 -
-        waveHeight, // translate y to position where lower point of the wave in the innerCircleHeight * fillPercent
+        waveHeight + liquidY.value, // translate y to position where lower point of the wave in the innerCircleHeight * fillPercent
       // since Y axis 0 is in the top, we do animation from 1 to (1 - fillPercent)
     );
     clipP.transform(transformMatrix); // apply transform matrix to our clip path
     return clipP;
-  }, [translateXAnimated, translateYPercent]);
+  }, [translateXAnimated, translateYPercent, liquidX, liquidY]);
   // const clipPath = clipP;
 
   return (
