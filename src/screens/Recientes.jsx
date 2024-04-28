@@ -16,11 +16,13 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 
 import Paho from "paho-mqtt";
+import { useNavigation } from '@react-navigation/native'; // Importa la función useNavigation
 
 const Todos = () => {
   const [recetas, setRecetas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [connected, setConnected] = useState(false);
+  const navigation = useNavigation(); // Obtiene el objeto de navegación
 
   const client = useRef(null);
 
@@ -66,11 +68,14 @@ const Todos = () => {
     fetchRecetas();
   }, []);
 
-  const enviarDatos = (procedimiento) => {
+  const enviarDatos = (procedimiento, nombreReceta) => {
     if (connected) {
       const mensaje = `${procedimiento}`;
       console.log("Enviando procedimiento: ", procedimiento);
       client.current.send("recetas/procedimiento", mensaje);
+      
+      // Navega a la pantalla de favoritos y pasa el nombre de la receta como parámetro
+      navigation.navigate('Favoritos', { nombreReceta });
     } else {
       console.log("No se puede enviar el mensaje. Cliente MQTT no conectado.");
     }
@@ -186,7 +191,7 @@ const Todos = () => {
                           bg="black"
                           _text={{ color: "white", fontSize: 18 }}
                           size="xs"
-                          onPress={() => enviarDatos(receta.procedimiento)}
+                          onPress={() => enviarDatos(receta.procedimiento, receta.nombre)}
                           position="absolute"
                           bottom={2}
                           right={2}

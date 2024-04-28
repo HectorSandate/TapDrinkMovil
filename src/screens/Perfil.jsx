@@ -95,7 +95,7 @@ const ProfileEditor = () => {
               as={<MaterialIcons name="person" />} size={5} ml="2" color="black"  
             />
           }
-          placeholder="Nombre"
+          placeholder={`Nombre (Actual: ${user.name})`}
           _light={{ backgroundColor: '#D9D9D9' }} 
         />
         <Input
@@ -107,7 +107,7 @@ const ProfileEditor = () => {
               as={<MaterialIcons name="email" />} size={5} ml="2" color="black" 
             />
           }
-          placeholder="Correo"
+          placeholder={`Correo (Actual: ${user.email})`}
           _light={{ backgroundColor: '#D9D9D9' }}
         />
         <Input

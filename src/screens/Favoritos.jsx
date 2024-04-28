@@ -5,11 +5,12 @@ import { LiquidGaugeProgress } from '../components/LiquidGaugeProgress';
 import { LinearGradient } from "expo-linear-gradient";
 import Paho from 'paho-mqtt';
 
-const MyComponent = () => {
+const FavoritosScreen = ({ route }) => {
   const selectedDrink = "Bebida 1"; // Aquí debes colocar el nombre de la bebida seleccionada
   const componentAlreadyExists = "Componente Ya Existente"; // Aquí debes colocar el nombre del componente ya existente
 
   const [progress, setProgress] = useState(0);
+  const [nombreReceta, setNombreReceta] = useState(""); // Estado local para almacenar el nombre de la receta
 
   const client = new Paho.Client(
     "test.mosquitto.org",
@@ -40,6 +41,14 @@ const MyComponent = () => {
     };
   }, []);
 
+  // Actualiza el nombre de la receta cuando se recibe un nuevo nombre a través de route.params
+  useEffect(() => {
+    const { nombreReceta } = route.params || {};
+    if (nombreReceta) {
+      setNombreReceta(nombreReceta);
+    }
+  }, [route.params]);
+
   return (
     <LinearGradient
       colors={["#141517", "#FFC107"]}
@@ -54,7 +63,7 @@ const MyComponent = () => {
       </View>
       <View style={styles.header}>
         <Text style={styles.title}>Bebida en curso:</Text>
-        <Text style={styles.selectedDrink}>{selectedDrink}</Text>
+        <Text style={styles.selectedDrink}>{nombreReceta || selectedDrink}</Text>
       </View>
       <View style={styles.progressContainer}>
         <LiquidGaugeProgress size={200} value={progress} />
@@ -101,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyComponent;
+export default FavoritosScreen;
