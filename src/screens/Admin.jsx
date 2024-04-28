@@ -1,3 +1,4 @@
+// Modificar Perfil
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
   gridContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "center", // Alineación centrada
     marginBottom: 20,
   },
   gridItem: {
