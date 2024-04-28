@@ -52,10 +52,6 @@ const Admin = () => {
             <Text style={styles.quantityText}>{recetasCount}</Text>
           </View>
           <View style={styles.gridItem}>
-            <Text style={styles.gridText}>Bebidas solicitadas:</Text>
-            <Text style={styles.quantityText}>15</Text>
-          </View>
-          <View style={styles.gridItem}>
             <Text style={styles.gridText}>Licores Registrados:</Text>
             <Text style={styles.quantityText}>{licoresCount}</Text>
           </View>

@@ -71,7 +71,12 @@ const ResultadosScreen = ({ route, navigation }) => {
           <Box key={index} style={styles.recetaContainer}>
             <Box style={styles.imageContainer}>
               <AspectRatio ratio={1 / 1}>
-                <Image source={{ uri: receta.image && receta.image.secure_url ? receta.image.secure_url : '' }} alt={receta.nombre || ''} resizeMode="cover" style={styles.image} />
+                <Image
+                  source={{ uri: receta.image && receta.image.secure_url ? receta.image.secure_url : 'https://via.placeholder.com/200' }}
+                  alt={receta.nombre || ''}
+                  resizeMode="cover"
+                  style={styles.image}
+                />              
               </AspectRatio>
               <Center style={styles.categoriaContainer}>
                 <Text style={styles.categoriaText}>{receta.categoria || ''}</Text>
