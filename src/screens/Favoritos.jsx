@@ -31,7 +31,10 @@ const FavoritosScreen = ({ route }) => {
 
     client.onMessageArrived = (message) => {
       const newProgress = parseInt(message.payloadString);
-      setProgress((prevProgress) => prevProgress + newProgress);
+      setProgress((prevProgress) => {
+        const updatedProgress = prevProgress + newProgress;
+        return updatedProgress >= 100 ? 100 : updatedProgress; // Detiene el progreso en 100
+      });
     };
 
     return () => {

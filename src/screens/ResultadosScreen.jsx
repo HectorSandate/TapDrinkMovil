@@ -39,13 +39,18 @@ const ResultadosScreen = ({ route }) => {
     };
   }, []);
 
-  const enviarDatos = (nombre) => {
+  const enviarDatos = (nombre, procedimiento) => {
     if (connected) {
-      navigation.navigate('Favoritos', { nombreReceta: nombre });
+      const datos = { nombre, procedimiento };
+      const mensaje = JSON.stringify(datos); // Envía los datos como un JSON
+      console.log("Enviando datos: ", datos);
+      client.current.send("recetas/procedimiento", mensaje);
+      navigation.navigate('Favoritos', { nombreReceta: nombre }); // Envía el nombre a la pantalla de Favoritos
     } else {
       console.log("No se puede enviar el mensaje. Cliente MQTT no conectado.");
     }
   };
+  
 
   if (!recetas || recetas.length === 0) {
     console.log("No hay recetas disponibles.");
@@ -73,7 +78,7 @@ const ResultadosScreen = ({ route }) => {
               <AspectRatio ratio={1 / 1}>
                 <Image
                   source={{ uri: receta.image && receta.image.secure_url ? receta.image.secure_url : 'https://via.placeholder.com/200' }}
-                  alt={receta.nombre || ''}
+       
                   resizeMode="cover"
                   style={styles.image}
                 />
@@ -90,7 +95,7 @@ const ResultadosScreen = ({ route }) => {
                 Duración: {receta.duracion || ''}
               </Text>
             </Box>
-            <Button style={styles.pedir} onPress={() => enviarDatos(receta.nombre)}>
+            <Button style={styles.pedir} onPress={() => enviarDatos(receta.nombre, receta.procedimiento)}>
               <Text style={styles.textPedir}>Pedir</Text>
             </Button>
           </Box>

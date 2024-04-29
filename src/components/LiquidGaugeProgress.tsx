@@ -119,8 +119,8 @@ export const LiquidGaugeProgress = ({ size, value }: Props) => {
 
   useEffect(() => {
     const subscription = Accelerometer.addListener(({ x, y }) => {
-      liquidX.value = x * 10;
-      liquidY.value = y * 10;
+      liquidX.value = x * 15;
+      liquidY.value = y * 15;
     });
 
     return () => {
