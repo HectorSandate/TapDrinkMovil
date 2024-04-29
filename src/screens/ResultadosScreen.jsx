@@ -39,17 +39,17 @@ const ResultadosScreen = ({ route }) => {
     };
   }, []);
 
-  const enviarDatos = (nombre, procedimiento) => {
+  const enviarDatos = (procedimiento, nombreReceta) => {
     if (connected) {
-      const datos = { nombre, procedimiento };
-      const mensaje = JSON.stringify(datos); // Envía los datos como un JSON
+      const datos = JSON.parse(procedimiento); // Convierte la cadena JSON a un objeto JavaScript
       console.log("Enviando datos: ", datos);
-      client.current.send("recetas/procedimiento", mensaje);
-      navigation.navigate('Favoritos', { nombreReceta: nombre }); // Envía el nombre a la pantalla de Favoritos
+      client.current.send("recetas/procedimiento", JSON.stringify(datos)); // Envía los datos como una cadena JSON
+      navigation.navigate('Favoritos', { nombreReceta }); // Pasa el nombre de la receta como parámetro
     } else {
       console.log("No se puede enviar el mensaje. Cliente MQTT no conectado.");
     }
   };
+  
 
   if (!recetas || recetas.length === 0) {
     console.log("No hay recetas disponibles.");
@@ -77,7 +77,7 @@ const ResultadosScreen = ({ route }) => {
               <AspectRatio ratio={1 / 1}>
                 <Image
                   source={{ uri: receta.image && receta.image.secure_url ? receta.image.secure_url : 'https://via.placeholder.com/200' }}
-                  alt={receta.nombre || ''}
+       
                   resizeMode="cover"
                   style={styles.image}
                 />
@@ -97,7 +97,7 @@ const ResultadosScreen = ({ route }) => {
                 {receta.procedimiento || ''}
               </Text>
             </Box>
-            <Button style={styles.pedir} onPress={() => enviarDatos(receta.nombre, receta.procedimiento)}>
+            <Button style={styles.pedir} onPress={() => enviarDatos(receta.procedimiento, receta.nombre)}>
               <Text style={styles.textPedir}>Pedir</Text>
             </Button>
           </Box>
@@ -208,4 +208,3 @@ const styles = {
 };
 
 export default ResultadosScreen;
-

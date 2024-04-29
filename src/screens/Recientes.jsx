@@ -70,9 +70,9 @@ const Todos = () => {
 
   const enviarDatos = (procedimiento, nombreReceta) => {
     if (connected) {
-      const mensaje = `${procedimiento}`;
-      console.log("Enviando procedimiento: ", procedimiento);
-      client.current.send("recetas/procedimiento", mensaje);
+      const mensaje = JSON.parse(procedimiento);
+      console.log("Enviando procedimiento: ", mensaje);
+      client.current.send("recetas/procedimiento", JSON.stringify(mensaje));
       
       // Navega a la pantalla de favoritos y pasa el nombre de la receta como parámetro
       navigation.navigate('Favoritos', { nombreReceta });
@@ -80,6 +80,9 @@ const Todos = () => {
       console.log("No se puede enviar el mensaje. Cliente MQTT no conectado.");
     }
   };
+
+  
+  
 
   if (loading) {
     return (
